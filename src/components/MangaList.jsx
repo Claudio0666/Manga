@@ -61,7 +61,7 @@ const MangaList = ({ mangas, onEditManga, onViewDetail, onDeleteManga, isLibrary
               onClick={event => {
                 event.stopPropagation();
                 setLibrary(prev => prev.map(item =>
-                  item.id === manga.id ? { ...item, favorito: !item.favorito } : item
+                  item.id === manga.id ? { ...item, favorito: !item.favorito, lastUpdatedAt: new Date().toISOString() } : item
                 ));
               }}
             >❤</button>

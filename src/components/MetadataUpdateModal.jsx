@@ -50,7 +50,7 @@ const MetadataUpdateModal = ({ isOpen, onClose }) => {
           const merge = mergeApiMetadata(manga, metadata, { overwrite });
           if (merge.changedFields.length) {
             setLibrary(current => current.map(item => item.id === manga.id
-              ? mergeApiMetadata(item, metadata, { overwrite }).manga
+              ? { ...mergeApiMetadata(item, metadata, { overwrite }).manga, lastUpdatedAt: new Date().toISOString() }
               : item));
             counts.updated += 1;
             activityItem = { type: 'success', text: `${manga.nome}: ${merge.changedFields.length} campo(s) preenchido(s) via ${metadata.apiSource}.` };

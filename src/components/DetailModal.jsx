@@ -26,7 +26,7 @@ const DetailModal = ({ isOpen, onClose, manga }) => {
   const toggleFavorite = (e) => {
     e.stopPropagation();
     setLibrary(prev => prev.map(m =>
-      m.id === manga.id ? { ...m, favorito: !m.favorito } : m
+      m.id === manga.id ? { ...m, favorito: !m.favorito, lastUpdatedAt: new Date().toISOString() } : m
     ));
   };
 
@@ -47,7 +47,8 @@ const DetailModal = ({ isOpen, onClose, manga }) => {
         ...item,
         translatedSynopsis: translated.synopsis,
         translatedGenres: translated.genres,
-        translationProviders: translated.providers
+        translationProviders: translated.providers,
+        lastUpdatedAt: new Date().toISOString()
       } : item));
       setShowTranslated(true);
     } catch (error) {

@@ -155,6 +155,11 @@ const MainApp = () => {
           const dateB = b.addedAt ? new Date(b.addedAt).getTime() : 0;
           return dateA - dateB;
         }
+        case 'updated': {
+          const dateA = new Date(a.lastUpdatedAt || a.addedAt || 0).getTime();
+          const dateB = new Date(b.lastUpdatedAt || b.addedAt || 0).getTime();
+          return dateB - dateA;
+        }
         default: return 0;
       }
     });

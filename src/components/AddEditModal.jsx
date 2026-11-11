@@ -337,7 +337,7 @@ const AddEditModal = ({ isOpen, onClose, mangaToEdit = null }) => {
       .map(field => [field, formData[field]]));
     setLibrary(current => current.map(manga => {
       if (manga.id !== existing.id) return manga;
-      const next = { ...manga, ...update };
+      const next = { ...manga, ...update, lastUpdatedAt: new Date().toISOString() };
       if (update.synopsis && update.synopsis !== manga.synopsis) delete next.translatedSynopsis;
       if (update.genres && JSON.stringify(update.genres) !== JSON.stringify(manga.genres)) delete next.translatedGenres;
       return next;
@@ -365,14 +365,17 @@ const AddEditModal = ({ isOpen, onClose, mangaToEdit = null }) => {
 
     if (mangaToEdit) {
       setLibrary(prev => {
-        const updated = prev.map(m => m.id === mangaToEdit.id ? { ...formData, id: m.id } : m);
+        const updated = prev.map(m => m.id === mangaToEdit.id
+          ? { ...formData, id: m.id, addedAt: m.addedAt, lastUpdatedAt: new Date().toISOString() }
+          : m);
         return [...updated];
       });
     } else {
       const newManga = {
         ...formData,
         id: Date.now().toString(),
-        addedAt: new Date().toISOString()
+        addedAt: new Date().toISOString(),
+        lastUpdatedAt: new Date().toISOString()
       };
       setLibrary(prev => [...prev, newManga]);
     }

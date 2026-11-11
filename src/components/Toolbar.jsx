@@ -35,6 +35,7 @@ const Toolbar = ({ filter, setFilter, sortBy, setSortBy, view, setView, genres =
           <select className="sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)} aria-label="Ordenar por">
             <option value="data_add">Mais recentes</option>
             <option value="data_old">Mais antigos</option>
+            <option value="updated">Atualizados recentemente</option>
             <option value="nota">Maior nota</option>
             <option value="nota_menor">Menor nota</option>
             <option value="nome">Nome A-Z</option>

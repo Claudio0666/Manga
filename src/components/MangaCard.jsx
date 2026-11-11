@@ -16,7 +16,7 @@ const MangaCard = ({ manga, onEditManga, onViewDetail, onDeleteManga }) => {
   const handleToggleFavorite = (e) => {
     e.stopPropagation();
     setLibrary(prev => prev.map(m =>
-      m.id === manga.id ? { ...m, favorito: !m.favorito } : m
+      m.id === manga.id ? { ...m, favorito: !m.favorito, lastUpdatedAt: new Date().toISOString() } : m
     ));
   };
 
