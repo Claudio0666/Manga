@@ -6,7 +6,7 @@ import { findMangaDuplicateCandidates, mergeApiMetadata } from '../utils/mangaDu
 
 const BackupModal = ({ isOpen, onClose, onDriveClick }) => {
   const {
-    library, meta, setLibrary, saveMainFile, restoreMainFile,
+    library, meta, setLibrary, setMeta, saveMainFile, restoreMainFile,
     draftSavedAt, draftStorageMode, mainFileName, mainFileSavedAt, savingMainFile
   } = useLibrary();
   const [recoveryPoints, setRecoveryPoints] = useState([]);
