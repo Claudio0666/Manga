@@ -127,6 +127,16 @@ export const LibraryProvider = ({ children }) => {
         console.error('[MangaShelf:storage] Não foi possível ler os metadados locais', error);
       }
 
+      if (!savedSnapshot && hasLegacyLocalLibrary && savedMeta.libraryUpdatedAt) {
+        savedSnapshot = {
+          app: 'MangaShelf',
+          version: 1,
+          updatedAt: savedMeta.libraryUpdatedAt,
+          library: savedLibrary,
+          meta: savedMeta
+        };
+      }
+
       const [workingSnapshot, storedHandle] = await Promise.all([
         readWorkingSnapshot().catch(error => {
           console.warn('[MangaShelf:storage] Não foi possível recuperar o rascunho', error);
@@ -156,6 +166,7 @@ export const LibraryProvider = ({ children }) => {
         ? { ...selectedSnapshot.meta }
         : savedMeta;
       delete selectedMeta.ownerId;
+      delete selectedMeta.libraryUpdatedAt;
       setMeta(selectedMeta);
       setDraftSavedAt(selectedSnapshot?.updatedAt || '');
       setDraftStorageMode(selectedSnapshot === workingSnapshot && selectedSnapshot ? 'opfs' : 'local');
@@ -176,9 +187,9 @@ export const LibraryProvider = ({ children }) => {
     const snapshot = { app: 'MangaShelf', version: 1, updatedAt, library, meta };
     latestSnapshotRef.current = snapshot;
     try {
-      // Store the timestamp with the library so localStorage and OPFS snapshots can be compared.
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
-      localStorage.setItem(META_KEY, JSON.stringify(meta));
+      // Keep the library in its legacy array format and persist its timestamp beside the metadata.
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(library));
+      localStorage.setItem(META_KEY, JSON.stringify({ ...meta, libraryUpdatedAt: updatedAt }));
     } catch (error) {
       console.error('[MangaShelf:storage] Não foi possível salvar a biblioteca local', error);
     }
