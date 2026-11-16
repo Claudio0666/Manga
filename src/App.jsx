@@ -111,7 +111,7 @@ const MainApp = () => {
       // Search filter
       if (search && !(
         m.nome.toLowerCase().includes(search.toLowerCase()) ||
-        (m.autor && m.autor.toLowerCase().includes(search.toLowerCase()))
+        (typeof m.autor === 'string' && m.autor.toLowerCase().includes(search.toLowerCase()))
       )) {
         return false;
       }
@@ -123,7 +123,7 @@ const MainApp = () => {
       }
 
       if (advancedFilters.genre && !(m.genres || []).includes(advancedFilters.genre) && !(m.translatedGenres || []).includes(advancedFilters.genre)) return false;
-      if (advancedFilters.author && !(m.autor || '').split(',').map(author => author.trim()).includes(advancedFilters.author)) return false;
+      if (advancedFilters.author && !(typeof m.autor === 'string' ? m.autor : '').split(',').map(author => author.trim()).includes(advancedFilters.author)) return false;
       if (advancedFilters.rating && Number(m.nota || 0) < Number(advancedFilters.rating)) return false;
       if (advancedFilters.progress === 'in_progress' && !(m.status !== 'concluido' && Number(m.capitulo) > 0 && (!Number(m.capituloTotal) || Number(m.capitulo) < Number(m.capituloTotal)))) return false;
       if (advancedFilters.progress === 'not_started' && Number(m.capitulo || 0) > 0) return false;
@@ -166,15 +166,15 @@ const MainApp = () => {
   }, [library, search, filter, sortBy, advancedFilters]);
 
   const filterOptions = useMemo(() => ({
-    genres: [...new Set(library.flatMap(manga => [...(manga.genres || []), ...(manga.translatedGenres || [])]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')),
-    authors: [...new Set(library.flatMap(manga => (manga.autor || '').split(',').map(author => author.trim()).filter(Boolean)))].sort((a, b) => a.localeCompare(b, 'pt-BR')),
+    genres: [...new Set(library.flatMap(manga => [...(Array.isArray(manga?.genres) ? manga.genres : []), ...(Array.isArray(manga?.translatedGenres) ? manga.translatedGenres : [])]).filter(genre => typeof genre === 'string' && genre))].sort((a, b) => a.localeCompare(b, 'pt-BR')),
+    authors: [...new Set(library.flatMap(manga => (typeof manga?.autor === 'string' ? manga.autor : '').split(',').map(author => author.trim()).filter(Boolean)))].sort((a, b) => a.localeCompare(b, 'pt-BR')),
     statusCounts: {
       todos: library.length,
-      lendo: library.filter(manga => manga.status === 'lendo').length,
-      concluido: library.filter(manga => manga.status === 'concluido').length,
-      pausado: library.filter(manga => manga.status === 'pausado').length,
-      dropado: library.filter(manga => manga.status === 'dropado').length,
-      favoritos: library.filter(manga => manga.favorito).length
+      lendo: library.filter(manga => manga?.status === 'lendo').length,
+      concluido: library.filter(manga => manga?.status === 'concluido').length,
+      pausado: library.filter(manga => manga?.status === 'pausado').length,
+      dropado: library.filter(manga => manga?.status === 'dropado').length,
+      favoritos: library.filter(manga => manga?.favorito).length
     }
   }), [library]);
   const activeAdvancedFilters = Object.values(advancedFilters).filter(Boolean).length;
