@@ -346,7 +346,8 @@ const AddEditModal = ({ isOpen, onClose, mangaToEdit = null }) => {
   };
 
   const handleSave = (keepDuplicate = false) => {
-    if (!formData.nome) {
+    const nome = typeof formData.nome === 'string' ? formData.nome.trim() : '';
+    if (!nome) {
       alert("O nome é obrigatório");
       return;
     }
@@ -366,13 +367,14 @@ const AddEditModal = ({ isOpen, onClose, mangaToEdit = null }) => {
     if (mangaToEdit) {
       setLibrary(prev => {
         const updated = prev.map(m => m.id === mangaToEdit.id
-          ? { ...formData, id: m.id, addedAt: m.addedAt, lastUpdatedAt: new Date().toISOString() }
+          ? { ...formData, nome, id: m.id, addedAt: m.addedAt, lastUpdatedAt: new Date().toISOString() }
           : m);
         return [...updated];
       });
     } else {
       const newManga = {
         ...formData,
+        nome,
         id: Date.now().toString(),
         addedAt: new Date().toISOString(),
         lastUpdatedAt: new Date().toISOString()
